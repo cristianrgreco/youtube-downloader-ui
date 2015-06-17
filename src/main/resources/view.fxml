@@ -1,0 +1,45 @@
+<?import javafx.collections.FXCollections?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.control.cell.*?>
+<?import javafx.scene.layout.*?>
+<?import java.net.URL?>
+
+<GridPane fx:id="root" fx:controller="com.cristianrgreco.ytdlui.Controller" xmlns:fx="http://javafx.com/fxml">
+    <stylesheets>
+        <URL value="@view.css"/>
+    </stylesheets>
+
+    <HBox styleClass="controls" GridPane.rowIndex="0" GridPane.columnIndex="0">
+        <Button text="Save Location" onAction="#setDestinationDirectory"/>
+        <fx:define>
+            <ToggleGroup fx:id="downloadType"/>
+        </fx:define>
+        <RadioButton fx:id="videoType" text="Video" selected="true" toggleGroup="$downloadType"/>
+        <RadioButton fx:id="audioType" text="Audio" toggleGroup="$downloadType"/>
+        <TextField fx:id="urlTextfield" prefColumnCount="25" promptText="http://www.youtube.com/watch?v=[VIDEO-CODE]"/>
+        <Button text="Download" onAction="#startDownload"/>
+    </HBox>
+
+    <TableView fx:id="downloadsTable" GridPane.rowIndex="1" GridPane.columnIndex="0">
+        <columns>
+            <TableColumn text="ID" prefWidth="130" >
+                <cellValueFactory><PropertyValueFactory property="videoId"/></cellValueFactory>
+            </TableColumn>
+            <TableColumn text="Destination" prefWidth="100">
+                <cellValueFactory><PropertyValueFactory property="outputString"/></cellValueFactory>
+            </TableColumn>
+            <TableColumn text="Type" prefWidth="50" styleClass="center-align">
+                <cellValueFactory><PropertyValueFactory property="typeImage"/></cellValueFactory>
+            </TableColumn>
+            <TableColumn text="Name" prefWidth="285">
+                <cellValueFactory><PropertyValueFactory property="name"/></cellValueFactory>
+            </TableColumn>
+            <TableColumn text="\%" prefWidth="135">
+                <cellValueFactory><PropertyValueFactory property="progressBar"/></cellValueFactory>
+            </TableColumn>
+        </columns>
+        <items>
+            <FXCollections fx:factory="observableArrayList"/>
+        </items>
+    </TableView>
+</GridPane>
