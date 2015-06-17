@@ -9,7 +9,16 @@
     <artifactId>youtube-downloader-ui</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <modules>
+        <module>../youtube-downloader</module>
+    </modules>
+
     <dependencies>
+        <dependency>
+            <groupId>com.cristianrgreco</groupId>
+            <artifactId>youtube-downloader</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
