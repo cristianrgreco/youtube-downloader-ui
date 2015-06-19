@@ -64,7 +64,6 @@ public class Controller {
 
     public void setDestinationDirectory() {
         this.destinationDirectoryService.prompt();
-//
 //        Arrays.asList(
 //                "https://www.youtube.com/watch?v=lWA2pjMjpBs",
 //                "https://www.youtube.com/watch?v=YqeW9_5kURI",
