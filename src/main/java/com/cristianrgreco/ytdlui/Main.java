@@ -10,6 +10,7 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.Properties;
 
 public class Main extends Application {
     @Override
@@ -23,10 +24,13 @@ public class Main extends Application {
         primaryStage.setResizable(false);
         primaryStage.show();
 
+        Properties properties = new Properties();
+        properties.load(ClassLoader.class.getResourceAsStream("/config.properties"));
+
         Controller controller = loader.<Controller>getController();
         controller.setBinaryConfiguration(new BinaryConfiguration(
-                new File("/Users/cristiangreco/Desktop/youtube-dl"),
-                new File("/Users/cristiangreco/Desktop/ffmpeg")));
+                new File(properties.getProperty("YOUTUBE-DL_BINARY_PATH")),
+                new File(properties.getProperty("FFMPEG_BINARY_PATH"))));
         controller.setAlertFactory(new AlertFactory(Optional.of(Arrays.asList("/view.css"))));
         controller.setDestinationDirectoryService(new DestinationDirectoryService(primaryStage.getScene().getWindow()));
     }
