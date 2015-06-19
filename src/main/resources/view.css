@@ -40,7 +40,8 @@
 }
 
 .button:hover,
-.button:focused {
+.button:focused,
+.button.default-btn {
     -fx-border-color: rgba(0, 0, 0, .2);
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 1px, 0, 0, 0);
 }
