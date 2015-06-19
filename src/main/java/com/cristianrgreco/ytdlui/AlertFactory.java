@@ -13,7 +13,7 @@ import java.io.StringWriter;
 import java.util.List;
 import java.util.Optional;
 
-class AlertFactory {
+public class AlertFactory {
     private static final int EXCEPTION_ALERT_WIDTH = 675;
     private static final int EXCEPTION_ALERT_HEIGHT = 400;
 

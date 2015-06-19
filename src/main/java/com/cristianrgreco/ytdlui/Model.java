@@ -1,14 +1,12 @@
 package com.cristianrgreco.ytdlui;
 
 import javafx.scene.control.ProgressBar;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 import java.io.File;
-import java.net.MalformedURLException;
 import java.net.URL;
 
-class Model {
+public class Model {
     private URL url;
     private File output;
     private String videoId;

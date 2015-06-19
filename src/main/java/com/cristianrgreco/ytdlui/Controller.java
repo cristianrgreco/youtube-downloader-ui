@@ -40,7 +40,6 @@ public class Controller {
     private BinaryConfiguration binaryConfiguration;
     private AlertFactory alertFactory;
     private DestinationDirectoryService destinationDirectoryService;
-    private DownloadService downloadService;
 
     void setBinaryConfiguration(BinaryConfiguration binaryConfiguration) {
         this.binaryConfiguration = binaryConfiguration;
@@ -54,10 +53,6 @@ public class Controller {
         this.destinationDirectoryService = destinationDirectoryService;
     }
 
-    void setDownloadService(DownloadService downloadService) {
-        this.downloadService = downloadService;
-    }
-
     public Controller() {
         this.currentDownloads = new HashSet<>();
         this.executor = Executors.newFixedThreadPool(5, runnable -> {
@@ -69,7 +64,7 @@ public class Controller {
 
     public void setDestinationDirectory() {
         this.destinationDirectoryService.prompt();
-
+//
 //        Arrays.asList(
 //                "https://www.youtube.com/watch?v=lWA2pjMjpBs",
 //                "https://www.youtube.com/watch?v=YqeW9_5kURI",
@@ -103,7 +98,7 @@ public class Controller {
             return;
         }
 
-        if (this.downloadService.isDownloadInProgress(urlString)) {
+        if (this.currentDownloads.contains(urlString)) {
             Platform.runLater(() -> this.alertFactory.alertForType(Alert.AlertType.WARNING, "Download Error", null, "Download already in progress.").showAndWait());
             return;
         }
@@ -137,7 +132,7 @@ public class Controller {
         }
         ImageView downloadTypeImageView = new ImageView();
         downloadTypeImageView.setFitHeight(12);
-        downloadTypeImageView.setFitWidth(17);
+        downloadTypeImageView.setFitWidth(15);
         downloadTypeImageView.setImage(downloadTypeImage);
 
         ObservableList<Model> data = this.downloadsTable.getItems();

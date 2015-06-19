@@ -2,7 +2,7 @@ package com.cristianrgreco.ytdlui;
 
 import java.io.File;
 
-interface BaseDestinationDirectoryService {
+public interface BaseDestinationDirectoryService {
     void prompt();
 
     File getDestinationDirectory();

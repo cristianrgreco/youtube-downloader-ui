@@ -5,7 +5,7 @@ import javafx.stage.Window;
 
 import java.io.File;
 
-class DestinationDirectoryService implements BaseDestinationDirectoryService {
+public class DestinationDirectoryService implements BaseDestinationDirectoryService {
     private Window window;
     private File destinationDirectory;
 

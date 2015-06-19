@@ -25,13 +25,10 @@ public class Main extends Application {
 
         Controller controller = loader.<Controller>getController();
         controller.setBinaryConfiguration(new BinaryConfiguration(
-                new File("C:\\Users\\crgreco\\Desktop\\youtube-dl.exe"),
-                new File("C:\\Users\\crgreco\\Desktop\\ffmpeg.exe")));
+                new File("/Users/cristiangreco/Desktop/youtube-dl"),
+                new File("/Users/cristiangreco/Desktop/ffmpeg")));
         controller.setAlertFactory(new AlertFactory(Optional.of(Arrays.asList("/view.css"))));
         controller.setDestinationDirectoryService(new DestinationDirectoryService(primaryStage.getScene().getWindow()));
-        controller.setDownloadService(new DownloadService(new BinaryConfiguration(
-                new File("C:\\Users\\crgreco\\Desktop\\youtube-dl.exe"),
-                new File("C:\\Users\\crgreco\\Desktop\\ffmpeg.exe"))));
     }
 
     public static void main(String[] args) {

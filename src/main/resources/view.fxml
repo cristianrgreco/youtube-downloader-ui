@@ -3,7 +3,6 @@
 <?import javafx.scene.control.cell.*?>
 <?import javafx.scene.layout.*?>
 <?import java.net.URL?>
-
 <GridPane fx:id="root" fx:controller="com.cristianrgreco.ytdlui.Controller" xmlns:fx="http://javafx.com/fxml">
     <stylesheets>
         <URL value="@view.css"/>
@@ -17,24 +16,24 @@
         <RadioButton fx:id="videoType" text="Video" selected="true" toggleGroup="$downloadType"/>
         <RadioButton fx:id="audioType" text="Audio" toggleGroup="$downloadType"/>
         <TextField fx:id="urlTextfield" prefColumnCount="25" promptText="http://www.youtube.com/watch?v=[VIDEO-CODE]"/>
-        <Button text="Download" onAction="#startDownload"/>
+        <Button text="Download" onAction="#startDownload" defaultButton="true"/>
     </HBox>
 
     <TableView fx:id="downloadsTable" GridPane.rowIndex="1" GridPane.columnIndex="0">
         <columns>
-            <TableColumn text="ID" prefWidth="130" >
+            <TableColumn text="ID" prefWidth="115">
                 <cellValueFactory><PropertyValueFactory property="videoId"/></cellValueFactory>
             </TableColumn>
-            <TableColumn text="Destination" prefWidth="100">
+            <TableColumn text="Destination" prefWidth="85">
                 <cellValueFactory><PropertyValueFactory property="outputString"/></cellValueFactory>
             </TableColumn>
-            <TableColumn text="Type" prefWidth="50" styleClass="center-align">
+            <TableColumn text="Type" prefWidth="35" styleClass="center-align">
                 <cellValueFactory><PropertyValueFactory property="typeImage"/></cellValueFactory>
             </TableColumn>
-            <TableColumn text="Name" prefWidth="285">
+            <TableColumn text="Name" prefWidth="265">
                 <cellValueFactory><PropertyValueFactory property="name"/></cellValueFactory>
             </TableColumn>
-            <TableColumn text="\%" prefWidth="135">
+            <TableColumn text="\%" prefWidth="120">
                 <cellValueFactory><PropertyValueFactory property="progressBar"/></cellValueFactory>
             </TableColumn>
         </columns>
