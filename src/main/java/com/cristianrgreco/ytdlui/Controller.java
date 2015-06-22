@@ -8,6 +8,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 
 import java.io.File;
@@ -73,9 +74,14 @@ public class Controller {
 
         String videoId;
         try {
-            videoId = URLEncodedUtils.parse(videoUrl.toURI(), "UTF-8").stream()
+            Optional<NameValuePair> parameter = URLEncodedUtils.parse(videoUrl.toURI(), "UTF-8").stream()
                     .filter(param -> param.getName().equals("v"))
-                    .findFirst().get().getValue();
+                    .findFirst();
+            if (!parameter.isPresent()) {
+                Platform.runLater(() -> this.alertFactory.alertForType(Alert.AlertType.WARNING, "Invalid URL", null, "Please enter a valid URL.").showAndWait());
+                return;
+            }
+            videoId = parameter.get().getValue();
         } catch (URISyntaxException e) {
             throw new IllegalArgumentException(e);
         }
