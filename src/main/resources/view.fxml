@@ -21,10 +21,10 @@
 
     <TableView fx:id="downloadsTable" GridPane.rowIndex="1" GridPane.columnIndex="0">
         <columns>
-            <TableColumn text="ID" prefWidth="115">
+            <TableColumn text="ID" prefWidth="110">
                 <cellValueFactory><PropertyValueFactory property="videoId"/></cellValueFactory>
             </TableColumn>
-            <TableColumn text="Destination" prefWidth="85">
+            <TableColumn text="Destination" prefWidth="90">
                 <cellValueFactory><PropertyValueFactory property="outputString"/></cellValueFactory>
             </TableColumn>
             <TableColumn text="Type" prefWidth="35" styleClass="center-align">

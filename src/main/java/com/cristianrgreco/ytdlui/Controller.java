@@ -7,7 +7,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.GridPane;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.http.client.utils.URLEncodedUtils;
 
@@ -26,8 +25,6 @@ public class Controller {
     private static final String DOWNLOAD_COMPLETE_STYLE = "-fx-accent: green;";
     private static final String DOWNLOAD_ERROR_STYLE = "-fx-accent: red;";
 
-    @FXML
-    private GridPane root;
     @FXML
     private TextField urlTextfield;
     @FXML
@@ -85,6 +82,10 @@ public class Controller {
             return;
         }
 
+        if (!urlString.startsWith("http") && !urlString.startsWith("HTTP")) {
+            urlString = "http://" + urlString;
+        }
+
         URL videoUrl;
         try {
             videoUrl = new URL(urlString);
@@ -92,13 +93,6 @@ public class Controller {
             Platform.runLater(() -> this.alertFactory.alertForType(Alert.AlertType.WARNING, "Invalid URL", null, "Please enter a valid URL.").showAndWait());
             return;
         }
-
-        if (this.currentDownloads.contains(urlString)) {
-            Platform.runLater(() -> this.alertFactory.alertForType(Alert.AlertType.WARNING, "Download Error", null, "Download already in progress.").showAndWait());
-            return;
-        }
-
-        this.urlTextfield.clear();
 
         String videoId;
         try {
@@ -108,6 +102,13 @@ public class Controller {
         } catch (URISyntaxException e) {
             throw new IllegalArgumentException(e);
         }
+
+        if (this.currentDownloads.contains(videoId)) {
+            Platform.runLater(() -> this.alertFactory.alertForType(Alert.AlertType.WARNING, "Download Error", null, "Download already in progress.").showAndWait());
+            return;
+        }
+
+        this.urlTextfield.clear();
 
         String outputString = this.destinationDirectoryService.getDestinationDirectory().getPath();
         String downloadType = ((RadioButton) this.downloadType.getSelectedToggle()).getId().equals("audioType") ? "Audio" : "Video";
@@ -133,7 +134,7 @@ public class Controller {
         model.setTypeImage(downloadTypeImageView);
         data.add(model);
 
-        this.currentDownloads.add(urlString);
+        this.currentDownloads.add(videoId);
 
         this.executor.execute(() -> {
             YouTubeDownloaderAdapter ytdl = new YouTubeDownloaderAdapter(
@@ -153,7 +154,7 @@ public class Controller {
                     if (state == State.COMPLETE) {
                         model.getProgressBar().setProgress(1);
                         model.getProgressBar().setStyle(DOWNLOAD_COMPLETE_STYLE);
-                        this.currentDownloads.remove(urlString);
+                        this.currentDownloads.remove(videoId);
                     }
                     refreshDownloadsTable();
                 });
