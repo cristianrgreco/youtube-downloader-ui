@@ -1,9 +1,6 @@
 package com.cristianrgreco.ytdlui;
 
-import com.cristianrgreco.ytdl.BinaryConfiguration;
-import com.cristianrgreco.ytdl.DownloadException;
-import com.cristianrgreco.ytdl.State;
-import com.cristianrgreco.ytdl.YouTubeDownloaderAdapter;
+import com.cristianrgreco.ytdl.*;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -25,6 +22,10 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 public class Controller {
+    private static final int CONCURRENT_REQUESTS = 5;
+    private static final String DOWNLOAD_COMPLETE_STYLE = "-fx-accent: green;";
+    private static final String DOWNLOAD_ERROR_STYLE = "-fx-accent: red;";
+
     @FXML
     private GridPane root;
     @FXML
@@ -36,26 +37,13 @@ public class Controller {
 
     private Executor executor;
     private Set<String> currentDownloads;
-
     private BinaryConfiguration binaryConfiguration;
     private AlertFactory alertFactory;
     private DestinationDirectoryService destinationDirectoryService;
 
-    void setBinaryConfiguration(BinaryConfiguration binaryConfiguration) {
-        this.binaryConfiguration = binaryConfiguration;
-    }
-
-    void setAlertFactory(AlertFactory alertFactory) {
-        this.alertFactory = alertFactory;
-    }
-
-    void setDestinationDirectoryService(DestinationDirectoryService destinationDirectoryService) {
-        this.destinationDirectoryService = destinationDirectoryService;
-    }
-
     public Controller() {
         this.currentDownloads = new HashSet<>();
-        this.executor = Executors.newFixedThreadPool(5, runnable -> {
+        this.executor = Executors.newFixedThreadPool(CONCURRENT_REQUESTS, runnable -> {
             Thread thread = Executors.defaultThreadFactory().newThread(runnable);
             thread.setDaemon(true);
             return thread;
@@ -97,6 +85,14 @@ public class Controller {
             return;
         }
 
+        URL videoUrl;
+        try {
+            videoUrl = new URL(urlString);
+        } catch (MalformedURLException e) {
+            Platform.runLater(() -> this.alertFactory.alertForType(Alert.AlertType.WARNING, "Invalid URL", null, "Please enter a valid URL.").showAndWait());
+            return;
+        }
+
         if (this.currentDownloads.contains(urlString)) {
             Platform.runLater(() -> this.alertFactory.alertForType(Alert.AlertType.WARNING, "Download Error", null, "Download already in progress.").showAndWait());
             return;
@@ -104,18 +100,11 @@ public class Controller {
 
         this.urlTextfield.clear();
 
-        final URL videoUrl;
-        try {
-            videoUrl = new URL(urlString);
-        } catch (MalformedURLException e) {
-            Platform.runLater(() -> this.alertFactory.errorForException(e, Optional.of("Invalid URL"), Optional.of("The URL provided is invalid")).showAndWait());
-            e.printStackTrace();
-            return;
-        }
-
         String videoId;
         try {
-            videoId = URLEncodedUtils.parse(videoUrl.toURI(), "UTF-8").stream().filter(param -> param.getName().equals("v")).findFirst().get().getValue();
+            videoId = URLEncodedUtils.parse(videoUrl.toURI(), "UTF-8").stream()
+                    .filter(param -> param.getName().equals("v"))
+                    .findFirst().get().getValue();
         } catch (URISyntaxException e) {
             throw new IllegalArgumentException(e);
         }
@@ -136,7 +125,7 @@ public class Controller {
 
         ObservableList<Model> data = this.downloadsTable.getItems();
 
-        final Model model = new Model();
+        Model model = new Model();
         model.setVideoId(videoId.toUpperCase());
         model.setUrlString(urlString);
         model.setOutputString(FilenameUtils.getBaseName(outputString));
@@ -145,6 +134,7 @@ public class Controller {
         data.add(model);
 
         this.currentDownloads.add(urlString);
+
         this.executor.execute(() -> {
             YouTubeDownloaderAdapter ytdl = new YouTubeDownloaderAdapter(
                     videoUrl,
@@ -157,51 +147,51 @@ public class Controller {
                     model.setName(title);
                     refreshDownloadsTable();
                 });
+
+                StateChangeEvent stateChangeEvent = state -> Platform.runLater(() -> {
+                    model.setStatus(state.toString());
+                    if (state == State.COMPLETE) {
+                        model.getProgressBar().setProgress(1);
+                        model.getProgressBar().setStyle(DOWNLOAD_COMPLETE_STYLE);
+                        this.currentDownloads.remove(urlString);
+                    }
+                    refreshDownloadsTable();
+                });
+
+                DownloadProgressUpdateEvent downloadProgressUpdateEvent = downloadProgress -> Platform.runLater(() -> {
+                    model.getProgressBar().setProgress(downloadProgress.getPercentageComplete().doubleValue() / 100);
+                    refreshDownloadsTable();
+                    refreshDownloadsTable();
+                });
+
                 if (downloadType.equals("Audio")) {
-                    ytdl.downloadAudio(Optional.of(state -> Platform.runLater(() -> {
-                        model.setStatus(state.toString());
-                        if (state == State.CONVERTING) {
-                            model.getProgressBar().setProgress(-1);
-                        } else if (state == State.COMPLETE) {
-//                                Media sound = new Media(getClass().getResource("/finished.mp3").toString());
-//                                new MediaPlayer(sound).play();
-                            model.getProgressBar().setProgress(1);
-                            model.getProgressBar().setStyle("-fx-accent: green;");
-                            this.currentDownloads.remove(urlString);
-                        }
-                        refreshDownloadsTable();
-                    })), Optional.of(progress -> Platform.runLater(() -> {
-                        model.getProgressBar().setProgress(progress.getPercentageComplete().doubleValue() / 100);
-                        refreshDownloadsTable();
-                        refreshDownloadsTable();
-                    })));
+                    ytdl.downloadAudio(Optional.of(stateChangeEvent), Optional.of(downloadProgressUpdateEvent));
                 } else {
-                    ytdl.downloadVideo(Optional.of(state -> Platform.runLater(() -> {
-                        model.setStatus(state.toString());
-                        if (state == State.CONVERTING) {
-                            model.getProgressBar().setProgress(-1);
-                        } else if (state == State.COMPLETE) {
-//                                Media sound = new Media(getClass().getResource("/finished.mp3").toString());
-//                                new MediaPlayer(sound).play();
-                            model.getProgressBar().setProgress(1);
-                            model.getProgressBar().setStyle("-fx-accent: green;");
-                            this.currentDownloads.remove(urlString);
-                        }
-                        refreshDownloadsTable();
-                    })), Optional.of(progress -> Platform.runLater(() -> {
-                        model.getProgressBar().setProgress(progress.getPercentageComplete().doubleValue() / 100);
-                        refreshDownloadsTable();
-                    })));
+                    ytdl.downloadVideo(Optional.of(stateChangeEvent), Optional.of(downloadProgressUpdateEvent));
                 }
             } catch (DownloadException e) {
-                Platform.runLater(() -> {
-                    model.getProgressBar().setProgress(1);
-                    model.getProgressBar().setStyle("-fx-accent: red;");
-                    this.alertFactory.errorForException(e, Optional.of("Download Error"), Optional.empty()).showAndWait();
-                });
+                if (e.hasErrorOccurred()) {
+                    Platform.runLater(() -> {
+                        model.getProgressBar().setProgress(1);
+                        model.getProgressBar().setStyle(DOWNLOAD_ERROR_STYLE);
+                        this.alertFactory.errorForException(e, Optional.of("Download Error"), Optional.empty()).showAndWait();
+                    });
+                }
                 e.printStackTrace();
             }
         });
+    }
+
+    void setBinaryConfiguration(BinaryConfiguration binaryConfiguration) {
+        this.binaryConfiguration = binaryConfiguration;
+    }
+
+    void setAlertFactory(AlertFactory alertFactory) {
+        this.alertFactory = alertFactory;
+    }
+
+    void setDestinationDirectoryService(DestinationDirectoryService destinationDirectoryService) {
+        this.destinationDirectoryService = destinationDirectoryService;
     }
 
     private synchronized void refreshDownloadsTable() {
