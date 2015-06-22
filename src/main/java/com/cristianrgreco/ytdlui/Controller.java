@@ -49,29 +49,6 @@ public class Controller {
 
     public void setDestinationDirectory() {
         this.destinationDirectoryService.prompt();
-//        Arrays.asList(
-//                "https://www.youtube.com/watch?v=lWA2pjMjpBs",
-//                "https://www.youtube.com/watch?v=YqeW9_5kURI",
-//                "https://www.youtube.com/watch?v=jcF5HtGvX5I",
-//                "https://www.youtube.com/watch?v=U0CGsw6h60k",
-//                "https://www.youtube.com/watch?v=uelHwf8o7_U",
-//                "https://www.youtube.com/watch?v=jV67jvvurCg",
-//                "https://www.youtube.com/watch?v=KMOOr7GEkj8",
-//                "https://www.youtube.com/watch?v=6JnGBs88sL0",
-//                "https://www.youtube.com/watch?v=QrOe2h9RtWI",
-//                "https://www.youtube.com/watch?v=Xcwd_Nz6Zog",
-//                "https://www.youtube.com/watch?v=pa14VNsdSYM",
-//                "https://www.youtube.com/watch?v=nhBorPm6JjQ",
-//                "https://www.youtube.com/watch?v=rp4UwPZfRis&index=15&list=PL-8M5stZkYjoIoESZb5jRfOs1mWHS4LPH",
-//                "https://www.youtube.com/watch?v=nhBorPm6JjQ&index=16&list=PL-8M5stZkYjoIoESZb5jRfOs1mWHS4LPH",
-//                "https://www.youtube.com/watch?v=ZQ2nCGawrSY&list=PL-8M5stZkYjoIoESZb5jRfOs1mWHS4LPH&index=17",
-//                "https://www.youtube.com/watch?v=KdS6HFQ_LUc&list=PL-8M5stZkYjoIoESZb5jRfOs1mWHS4LPH&index=19",
-//                "https://www.youtube.com/watch?v=hD5MRBzY1uM&list=PL-8M5stZkYjoIoESZb5jRfOs1mWHS4LPH&index=20",
-//                "https://www.youtube.com/watch?v=up7pvPqNkuU&index=21&list=PL-8M5stZkYjoIoESZb5jRfOs1mWHS4LPH"
-//        ).stream().distinct().forEach(url -> {
-//            this.urlTextfield.setText(url);
-//            this.startDownload();
-//        });
     }
 
     public void startDownload() {
