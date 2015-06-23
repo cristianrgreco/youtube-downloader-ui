@@ -93,9 +93,7 @@ public class Controller {
 
         this.urlTextfield.clear();
 
-        String outputString = this.destinationDirectoryService.getDestinationDirectory().getPath();
         String downloadType = ((RadioButton) this.downloadType.getSelectedToggle()).getId().equals("audioType") ? "Audio" : "Video";
-
         Image downloadTypeImage;
         if (downloadType.equals("Audio")) {
             downloadTypeImage = new Image(getClass().getResource("/music.png").toString());
@@ -112,7 +110,7 @@ public class Controller {
         Model model = new Model();
         model.setVideoId(videoId.toUpperCase());
         model.setUrlString(urlString);
-        model.setOutputString(FilenameUtils.getBaseName(outputString));
+        model.setOutputString(FilenameUtils.getBaseName(this.destinationDirectoryService.getDestinationDirectory().getPath()));
         model.setType(downloadType);
         model.setTypeImage(downloadTypeImageView);
         data.add(model);

@@ -71,8 +71,8 @@ public class AlertFactory {
 
     private Alert baseAlert(Alert.AlertType alertType) {
         Alert alert = new Alert(alertType);
-        this.styleSheets.ifPresent(styleSheets -> styleSheets.forEach(
-                styleSheet -> alert.getDialogPane().getStylesheets().add(getClass().getResource(styleSheet).toExternalForm())));
+        this.styleSheets.ifPresent(styleSheets -> styleSheets.forEach(styleSheet ->
+                alert.getDialogPane().getStylesheets().add(getClass().getResource(styleSheet).toExternalForm())));
         return alert;
     }
 
